@@ -1,0 +1,66 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isUser() {
+      return isAuth() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'user';
+    }
+
+    function isAdmin() {
+      return isAuth() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isUserOrAdmin() {
+      return isUser() || isAdmin();
+    }
+
+    // Users collection
+    match /users/{uid} {
+      // Anyone authenticated can create their own user doc on first login
+      allow create: if isAuth() && request.auth.uid == uid;
+
+      // Users can read their own doc; admins can read all
+      allow read: if isAuth() && (request.auth.uid == uid || isAdmin());
+
+      // Only admins can update role/approvedAt; users can update their own readNotifications
+      allow update: if isAdmin() || (
+        isAuth() &&
+        request.auth.uid == uid &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readNotifications'])
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    // Sermons — admin CRUD, users read
+    match /sermons/{id} {
+      allow read: if isUserOrAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // QT — all approved users can create; owner can update/delete their own
+    match /qt/{id} {
+      allow read: if isUserOrAdmin();
+      allow create: if isUserOrAdmin();
+      allow update, delete: if isAuth() && resource.data.authorId == request.auth.uid;
+    }
+
+    // Koinonia — admin CRUD, users read
+    match /koinonia/{id} {
+      allow read: if isUserOrAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Prayer — admin CRUD, users read
+    match /prayer/{id} {
+      allow read: if isUserOrAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}
