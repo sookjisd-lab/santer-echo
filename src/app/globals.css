@@ -9,8 +9,8 @@
   --color-accent:        #4A7C59;
 
   /* Semantic */
-  --color-bg:            #F5F8F6;
-  --color-surface:       #FFFFFF;
+  --color-bg:            #EFE8D8;
+  --color-surface:       #F7F2E8;
   --color-border:        #D4E0D8;
   --color-text:          #1A2E20;
   --color-muted:         #6B8C74;
@@ -38,4 +38,19 @@ body {
   min-height: 100dvh;
   background: var(--color-surface);
   position: relative;
+}
+
+/* 한지 질감 오버레이 */
+#app-shell::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  max-width: 480px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.055'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
 }
