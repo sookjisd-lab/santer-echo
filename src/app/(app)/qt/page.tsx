@@ -135,7 +135,7 @@ export default function QtPage() {
       )}
 
       {/* 하단 나눔 입력 바 */}
-      <div className="fixed bottom-14 left-0 right-0 z-[6] bg-surface px-3 py-2">
+      <div className="fixed bottom-14 left-1/2 z-[6] w-full max-w-[480px] -translate-x-1/2 bg-surface px-3 py-2">
         <Link
           href="/qt/new"
           className="flex w-full items-center rounded-2xl border border-border bg-bg px-4 py-2.5 text-sm text-muted"
