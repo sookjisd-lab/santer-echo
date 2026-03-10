@@ -35,9 +35,10 @@ body {
 #app-shell {
   max-width: 480px;
   margin: 0 auto;
-  min-height: 100dvh;
+  height: 100dvh;
   background: var(--color-surface);
   position: relative;
+  overflow: hidden;
 }
 
 /* 한지 질감 오버레이 */
