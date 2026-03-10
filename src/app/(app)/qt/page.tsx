@@ -59,7 +59,6 @@ export default function QtPage() {
   }, [loading, posts])
 
   const groups = groupByWeekAndDate(posts)
-  const todayStr = new Date().toISOString().slice(0, 10)
 
   return (
     <>
@@ -78,22 +77,15 @@ export default function QtPage() {
         <div className="divide-y divide-border pb-32">
           {groups.map((group) => (
             <div key={group.weekLabel}>
-              {/* Week label */}
-              <div className="sticky top-14 z-[5] bg-primary-pale px-4 py-1.5">
-                <span className="text-xs font-semibold text-primary">{group.weekLabel}</span>
+              {/* Week separator - 주차당 한 번 */}
+              <div className="flex items-center gap-3 px-4 py-3">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-xs text-muted">{group.weekLabel}</span>
+                <div className="h-px flex-1 bg-border" />
               </div>
 
               {group.dates.map(({ dateStr, posts: datePosts }) => (
                 <div key={dateStr}>
-                  {/* Date separator */}
-                  <div className="flex items-center gap-3 px-4 py-3">
-                    <div className="h-px flex-1 bg-border" />
-                    <span className="text-xs text-muted">
-                      {dateStr === todayStr ? '오늘' : dateStr.replace(/-/g, '. ')}
-                    </span>
-                    <div className="h-px flex-1 bg-border" />
-                  </div>
-
                   {/* Posts as chat bubbles */}
                   <div className="flex flex-col gap-4 px-4 pb-2">
                     {datePosts.map((post) => {
