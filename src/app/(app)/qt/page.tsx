@@ -75,7 +75,7 @@ export default function QtPage() {
           <p className="text-xs text-muted">아래 입력칸으로 첫 큐티를 나눠보세요</p>
         </div>
       ) : (
-        <div className="divide-y divide-border pb-4">
+        <div className="divide-y divide-border pb-32">
           {groups.map((group) => (
             <div key={group.weekLabel}>
               {/* Week label */}
@@ -135,7 +135,7 @@ export default function QtPage() {
       )}
 
       {/* 하단 나눔 입력 바 */}
-      <div className="sticky bottom-0 z-[6] border-t border-border bg-surface px-3 py-2.5">
+      <div className="fixed bottom-14 left-0 right-0 z-[6] bg-surface px-3 py-2">
         <Link
           href="/qt/new"
           className="flex w-full items-center rounded-2xl border border-border bg-bg px-4 py-2.5 text-sm text-muted"
