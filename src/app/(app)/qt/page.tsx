@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
@@ -41,9 +41,10 @@ export default function QtPage() {
   const { appUser } = useAuth()
   const [posts, setPosts] = useState<QtPost[]>([])
   const [loading, setLoading] = useState(true)
+  const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const q = query(collection(db, 'qt'), orderBy('createdAt', 'desc'))
+    const q = query(collection(db, 'qt'), orderBy('createdAt', 'asc'))
     const unsub = onSnapshot(q, (snap) => {
       setPosts(snap.docs.map((d) => ({ id: d.id, ...d.data() }) as QtPost))
       setLoading(false)
@@ -51,22 +52,18 @@ export default function QtPage() {
     return unsub
   }, [])
 
+  useEffect(() => {
+    if (!loading) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [loading, posts])
+
   const groups = groupByWeekAndDate(posts)
   const todayStr = new Date().toISOString().slice(0, 10)
 
   return (
     <>
-      <Header
-        title="큐티 나눔"
-        right={
-          <Link
-            href="/qt/new"
-            className="rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-white"
-          >
-            + 나눔
-          </Link>
-        }
-      />
+      <Header title="큐티 나눔" />
 
       {loading ? (
         <div className="flex h-40 items-center justify-center">
@@ -75,12 +72,10 @@ export default function QtPage() {
       ) : posts.length === 0 ? (
         <div className="flex h-40 flex-col items-center justify-center gap-2 text-sm text-muted">
           <p>아직 나눔이 없습니다</p>
-          <Link href="/qt/new" className="text-primary underline underline-offset-2">
-            첫 큐티를 나눠보세요
-          </Link>
+          <p className="text-xs text-muted">아래 입력칸으로 첫 큐티를 나눠보세요</p>
         </div>
       ) : (
-        <div className="divide-y divide-border">
+        <div className="divide-y divide-border pb-4">
           {groups.map((group) => (
             <div key={group.weekLabel}>
               {/* Week label */}
@@ -135,8 +130,19 @@ export default function QtPage() {
               ))}
             </div>
           ))}
+          <div ref={bottomRef} />
         </div>
       )}
+
+      {/* 하단 나눔 입력 바 */}
+      <div className="sticky bottom-0 z-[6] border-t border-border bg-surface px-3 py-2.5">
+        <Link
+          href="/qt/new"
+          className="flex w-full items-center rounded-2xl border border-border bg-bg px-4 py-2.5 text-sm text-muted"
+        >
+          나눔 입력
+        </Link>
+      </div>
     </>
   )
 }
