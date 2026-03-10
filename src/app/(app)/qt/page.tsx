@@ -74,7 +74,7 @@ export default function QtPage() {
           <p className="text-xs text-muted">아래 입력칸으로 첫 큐티를 나눠보세요</p>
         </div>
       ) : (
-        <div className="divide-y divide-border pb-32">
+        <div className="pb-4">
           {groups.map((group) => (
             <div key={group.weekLabel}>
               {/* Week separator - 주차당 한 번 */}
